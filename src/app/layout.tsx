@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "tab-project-next · 让新标签页，成为你的日常",
+  title: "tab-project · 让新标签页，成为你的日常",
   description: "面向 Edge / Chrome 的开源新标签页工作台。把常用网站、书签、音乐与 todoist 放在一起，按自己的习惯组织浏览器。",
+  verification: {
+    google: "um1XqtmpcCLUYGbZWfJEJXpdF3L1ju1iCso4BdlMp8o",
+  },
 };
 
 export default function RootLayout({
