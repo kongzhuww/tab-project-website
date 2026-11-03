@@ -413,6 +413,204 @@ body {
 .install-step-card p { font-size: 13px; color: var(--muted); line-height: 1.8; margin-top: 8px; }
 .install-step-card code { font-size: 12px; background: var(--surface); padding: 2px 5px; border-radius: 4px; color: var(--heading); }
 .text-link { font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+
+/* ================= 实时版本发布中心与历史归档 ================= */
+.releases-center-box {
+  margin-top: 48px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: var(--shadow-sm);
+}
+.releases-center-head {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+}
+.releases-center-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.releases-center-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.releases-center-title-row h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--heading);
+}
+.releases-center-subtitle {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.latest-release-actions-card {
+  margin-top: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+}
+.release-card-main-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.release-card-tag-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--heading);
+}
+.dot-live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+.tag-date {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.release-card-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dl-btn {
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+}
+.dl-btn.primary-dl {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.dl-btn.primary-dl:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.dl-btn.mirror-dl {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--heading);
+}
+.dl-btn.mirror-dl:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.dl-btn.store-dl {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+.dl-btn.store-dl:hover {
+  background: #0284c7;
+}
+.releases-history-toggle-row {
+  margin-top: 18px;
+  text-align: center;
+}
+.toggle-history-btn {
+  background: none;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.toggle-history-btn:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.releases-history-list {
+  margin-top: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.history-release-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  transition: background 0.15s ease;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.history-release-row:last-child {
+  border-bottom: none;
+}
+.history-release-row:hover {
+  background: var(--surface);
+}
+.history-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.history-tag-name {
+  font-weight: 700;
+  color: var(--heading);
+  min-width: 65px;
+}
+.history-tag-date {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.history-tag-title {
+  color: var(--text);
+  font-size: 12.5px;
+}
+.history-row-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.history-dl-btn {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--heading);
+  transition: all 0.15s ease;
+}
+.history-dl-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.history-dl-btn.mirror {
+  color: var(--muted);
+}
+
 .closing-section { padding-block: 60px 80px; }
 .closing-box { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 60px 24px; text-align: center; box-shadow: var(--shadow); }
 .closing-box h2 { font-size: clamp(26px, 3.2vw, 38px); font-weight: 700; margin-top: 18px; }

@@ -1,11 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const REPO = "https://github.com/kongzhuww/tab-project-next";
-const RELEASE_URL = "https://github.com/kongzhuww/tab-project-next/releases/latest";
+const REPO = "https://github.com/kongzhuww/tab-project";
+const RELEASES_API = "https://api.github.com/repos/kongzhuww/tab-project/releases";
+const RELEASE_URL = "https://github.com/kongzhuww/tab-project/releases/latest";
+const EDGE_STORE_URL = "https://microsoftedge.microsoft.com/addons/detail/tabproject-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5/dbkaiojfbolnkpaegflocfbdgpmhjcco";
+
+interface GithubAsset {
+  name: string;
+  browser_download_url: string;
+  size: number;
+}
+
+interface GithubRelease {
+  id: number;
+  tag_name: string;
+  name: string;
+  body: string;
+  published_at: string;
+  assets: GithubAsset[];
+}
 
 const themes = [
   { id: "light", label: "Light · 明亮", note: "干净通透，把视觉重心留给重要内容与效率。" },
@@ -17,6 +34,53 @@ type ThemeId = (typeof themes)[number]["id"];
 
 export default function Home() {
   const [theme, setTheme] = useState<ThemeId>("light");
+  const [latestVersion, setLatestVersion] = useState("1.0.10");
+  const [latestZipUrl, setLatestZipUrl] = useState(
+    "https://github.com/kongzhuww/tab-project/releases/download/v1.0.10/tab-project-v1.0.10-extension.zip"
+  );
+  const [allReleases, setAllReleases] = useState<GithubRelease[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+  const [loadingReleases, setLoadingReleases] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    fetch(RELEASES_API)
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: any[]) => {
+        if (!active || !Array.isArray(data) || data.length === 0) return;
+        setAllReleases(data);
+        const latest = data[0];
+        if (latest) {
+          const ver = latest.tag_name ? latest.tag_name.replace(/^v/i, "") : "1.0.10";
+          setLatestVersion(ver);
+          const zipAsset = latest.assets?.find((a: any) => a.name?.endsWith(".zip"));
+          if (zipAsset?.browser_download_url) {
+            setLatestZipUrl(zipAsset.browser_download_url);
+          }
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoadingReleases(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const getMirrorDownloadUrl = (url: string) => {
+    return `https://ghproxy.net/${url}`;
+  };
+
+  const formatDate = (isoString: string) => {
+    if (!isoString) return "";
+    try {
+      const d = new Date(isoString);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    } catch {
+      return "";
+    }
+  };
 
   return (
     <div className="landing" data-theme={theme}>
@@ -24,23 +88,26 @@ export default function Home() {
 
       {/* 顶栏 Header */}
       <header className="site-header">
-        <a className="brand" href="#" aria-label="tab-project-next 首页">
+        <a className="brand" href="#" aria-label="tab-project 首页">
           <div className="brand-logo-wrap">
             <Image src="/assets/icon-48.png" alt="Logo" width={32} height={32} className="brand-logo-img" />
           </div>
           <div className="brand-text-wrap">
-            <span className="brand-name">tab-project<span className="brand-next"> / next</span></span>
-            <span className="brand-badge">v1.0.5 开源正式版</span>
+            <span className="brand-name">tab-project</span>
+            <span className="brand-badge">v{latestVersion} 正式版</span>
           </div>
         </a>
 
         <nav aria-label="主导航">
           <a href="#features">功能特性</a>
           <a href="#appearance">主题外观</a>
-          <a href="#install">安装使用</a>
+          <a href="#install">安装与版本</a>
         </nav>
 
         <div className="header-actions">
+          <a className="repo-link" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer" style={{ marginRight: 8 }}>
+            <span>Edge 商店</span>
+          </a>
           <a className="repo-link" href={REPO} target="_blank" rel="noopener noreferrer">
             <Image src="/assets/github-star.svg" alt="" width={15} height={15} className="repo-star-icon" />
             <span>GitHub Star</span>
@@ -54,7 +121,7 @@ export default function Home() {
           <div className="hero-copy">
             <div className="hero-tags">
               <span className="eyebrow"><span className="status-dot" /> 纯净 Manifest V3 桌面浏览器扩展</span>
-              <span className="hero-ver-chip">新版本 1.0.5 现已发布</span>
+              <span className="hero-ver-chip">正式版 v{latestVersion} 现已发布</span>
             </div>
             <h1>把属于你的日常，<br />安放在<span className="accent-word">顺手的新标签页。</span></h1>
             <p className="hero-description">
@@ -62,12 +129,16 @@ export default function Home() {
               随心畅听的背景旋律。本地保存个人设置，按需连接你选择的服务。
             </p>
             <div className="actions">
-              <a className="button primary" href={RELEASE_URL} target="_blank" rel="noopener noreferrer">
-                <span>立即下载 v1.0.5 扩展包</span>
+              <a className="button primary" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
+                <span>立即下载 v{latestVersion} 扩展包 (ZIP)</span>
                 <span className="btn-arrow" aria-hidden="true">↓</span>
               </a>
+              <a className="button secondary" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
+                <span>🛒 Edge 商店直接获取</span>
+                <span className="btn-arrow" aria-hidden="true">↗</span>
+              </a>
               <a className="button secondary" href={REPO} target="_blank" rel="noopener noreferrer">
-                <span>浏览 GitHub 源码</span>
+                <span>GitHub 源码</span>
                 <span className="btn-arrow" aria-hidden="true">↗</span>
               </a>
             </div>
@@ -198,17 +269,17 @@ export default function Home() {
         <section className="install-section container section-space" id="install">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">GET STARTED</p>
-              <h2>三步安装，即刻开启。</h2>
+              <p className="eyebrow">GET STARTED & RELEASES</p>
+              <h2>安装使用与版本发布中心</h2>
             </div>
-            <a className="text-link" href={RELEASE_URL} target="_blank" rel="noopener noreferrer">前往 GitHub Releases 下载 ZIP ↗</a>
+            <a className="text-link" href={RELEASE_URL} target="_blank" rel="noopener noreferrer">前往 GitHub Releases 页面 ↗</a>
           </div>
 
           <div className="install-steps-row">
             <div className="install-step-card">
               <span className="step-idx">01</span>
               <h4>下载解压</h4>
-              <p>在 GitHub 发行页面下载最新的 <code>tab-project-v1.0.5-extension.zip</code>，解压到电脑的固定目录。</p>
+              <p>下载最新的 <code>tab-project-v{latestVersion}-extension.zip</code>，解压到电脑的固定目录。</p>
             </div>
             <div className="install-step-card">
               <span className="step-idx">02</span>
@@ -221,6 +292,77 @@ export default function Home() {
               <p>点击“加载解压缩的扩展”，选择刚刚解压的目录。新开一个标签页，即可立刻体验你的专属空间！</p>
             </div>
           </div>
+
+          {/* 版本发布中心与历史归档模块 */}
+          <div className="releases-center-box">
+            <div className="releases-center-head">
+              <div className="releases-center-title-row">
+                <span className="releases-center-badge">实时版本中心</span>
+                <h3>当前最新发行版：v{latestVersion}</h3>
+              </div>
+              <p className="releases-center-subtitle">
+                所有安装包均通过 GitHub Actions 自动化编译打包与签名，保证纯净无修改。支持国内镜像极速下载。
+              </p>
+            </div>
+
+            <div className="latest-release-actions-card">
+              <div className="release-card-main-info">
+                <div className="release-card-tag-pill">
+                  <span className="dot-live"></span>
+                  <strong>v{latestVersion}</strong>
+                  <span className="tag-date">{allReleases[0]?.published_at ? formatDate(allReleases[0].published_at) : "最新发布"}</span>
+                </div>
+                <div className="release-card-links">
+                  <a className="dl-btn primary-dl" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
+                    <span>📥 官方下载 ZIP</span>
+                  </a>
+                  <a className="dl-btn mirror-dl" href={getMirrorDownloadUrl(latestZipUrl)} target="_blank" rel="noopener noreferrer" title="免翻加速下载">
+                    <span>⚡ 国内镜像加速</span>
+                  </a>
+                  <a className="dl-btn store-dl" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
+                    <span>🛒 Edge 商店直接获取</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* 历史版本折叠切换 */}
+            <div className="releases-history-toggle-row">
+              <button
+                type="button"
+                className="toggle-history-btn"
+                onClick={() => setShowHistory(!showHistory)}
+              >
+                <span>{showHistory ? "收起历史版本归档 ▲" : `查看全部 ${allReleases.length || 11} 个历史版本归档 ▼`}</span>
+              </button>
+            </div>
+
+            {showHistory && (
+              <div className="releases-history-list">
+                {allReleases.map((rel) => {
+                  const zip = rel.assets?.find((a) => a.name?.endsWith(".zip"));
+                  const zipUrl = zip?.browser_download_url || `https://github.com/kongzhuww/tab-project/releases/download/${rel.tag_name}/tab-project-${rel.tag_name.replace(/^v/i, "")}-extension.zip`;
+                  return (
+                    <div key={rel.id || rel.tag_name} className="history-release-row">
+                      <div className="history-row-left">
+                        <span className="history-tag-name">{rel.tag_name}</span>
+                        <span className="history-tag-date">{formatDate(rel.published_at)}</span>
+                        <span className="history-tag-title">{rel.name || rel.tag_name}</span>
+                      </div>
+                      <div className="history-row-right">
+                        <a className="history-dl-btn" href={zipUrl} target="_blank" rel="noopener noreferrer">
+                          下载 ZIP
+                        </a>
+                        <a className="history-dl-btn mirror" href={getMirrorDownloadUrl(zipUrl)} target="_blank" rel="noopener noreferrer">
+                          加速镜像
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* 底部 Call To Action */}
@@ -228,11 +370,15 @@ export default function Home() {
           <div className="closing-box">
             <Image src="/assets/icon-128.png" alt="Logo" width={64} height={64} className="closing-logo" />
             <h2>打开新一页，回到属于你的从容。</h2>
-            <p>tab-project-next · 基于纯净 Manifest V3 构建的现代化开源新标签页</p>
+            <p>tab-project · 基于纯净 Manifest V3 构建的现代化开源新标签页</p>
             <div className="actions justify-center">
-              <a className="button primary" href={RELEASE_URL} target="_blank" rel="noopener noreferrer">
-                <span>下载 1.0.5 正式版</span>
+              <a className="button primary" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
+                <span>下载 v{latestVersion} 正式版</span>
                 <span className="btn-arrow" aria-hidden="true">↓</span>
+              </a>
+              <a className="button secondary" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
+                <span>前往 Edge 加载项商店</span>
+                <span className="btn-arrow" aria-hidden="true">🛒</span>
               </a>
               <a className="button secondary" href={REPO} target="_blank" rel="noopener noreferrer">
                 <span>在 GitHub 上关注项目</span>
@@ -246,7 +392,7 @@ export default function Home() {
       {/* 页脚 Footer */}
       <footer className="site-footer container">
         <div className="footer-left">
-          <span className="footer-brand">tab-project-next</span>
+          <span className="footer-brand">tab-project</span>
           <span className="footer-copyright">© {new Date().getFullYear()} kongzhuww · 保持专注，探索日常。</span>
         </div>
         <div className="footer-links">
