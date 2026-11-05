@@ -35,9 +35,9 @@ type ThemeId = (typeof themes)[number]["id"];
 
 export default function Home() {
   const [theme, setTheme] = useState<ThemeId>("light");
-  const [latestVersion, setLatestVersion] = useState("1.0.14");
+  const [latestVersion, setLatestVersion] = useState("1.0.15");
   const [latestZipUrl, setLatestZipUrl] = useState(
-    "https://github.com/kongzhuww/tab-project/releases/download/v1.0.14/tab-project-v1.0.14-extension.zip"
+    "https://github.com/kongzhuww/tab-project/releases/download/v1.0.15/tab-project-v1.0.15-extension.zip"
   );
   const [allReleases, setAllReleases] = useState<GithubRelease[]>([]);
   const [showHistory, setShowHistory] = useState(false);
@@ -52,7 +52,7 @@ export default function Home() {
         setAllReleases(data);
         const latest = data[0];
         if (latest) {
-          const ver = latest.tag_name ? latest.tag_name.replace(/^v/i, "") : "1.0.14";
+          const ver = latest.tag_name ? latest.tag_name.replace(/^v/i, "") : "1.0.15";
           setLatestVersion(ver);
           const zipAsset = latest.assets?.find((a: GithubAsset) => a.name?.endsWith(".zip"));
           if (zipAsset?.browser_download_url) {
