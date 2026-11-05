@@ -526,6 +526,20 @@ body {
 .dl-btn.store-dl:hover {
   background: #0284c7;
 }
+.dl-btn.store-dl.chrome {
+  background: #1a73e8;
+  color: #ffffff;
+}
+.dl-btn.store-dl.chrome:hover {
+  background: #1557b0;
+}
+.dl-btn.store-dl.edge {
+  background: #0078d4;
+  color: #ffffff;
+}
+.dl-btn.store-dl.edge:hover {
+  background: #005a9e;
+}
 .releases-history-toggle-row {
   margin-top: 18px;
   text-align: center;

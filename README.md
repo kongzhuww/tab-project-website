@@ -1,8 +1,8 @@
-# tab-project-next 介绍网站
+# tab-project 介绍网站
 
 [English](README_en.md) | **简体中文**
 
-基于 Next.js 16、React 19 与 TypeScript 的静态介绍站，介绍 [kongzhuww/tab-project-next](https://github.com/kongzhuww/tab-project-next)。
+基于 Next.js 16、React 19 与 TypeScript 的静态介绍站，介绍 [kongzhuww/tab-project](https://github.com/kongzhuww/tab-project)。
 
 - 网站仓库：`kongzhuww/tab-project-website`
 - 本地目录：`D:\default save place\GitHub\tab-project-website`
@@ -15,7 +15,7 @@
 
 ## 内容边界
 
-首页基于本地 tab-project-next README 和源码制作；不在构建时请求 GitHub，也不宣称某个发行附件已存在。发行入口使用 `/releases` 列表，无附件时按项目 README 从源码构建。
+首页基于本地 tab-project README 和源码制作；不在构建时请求 GitHub，也不宣称某个发行附件已存在。发行入口使用 `/releases` 列表，无附件时按项目 README 从源码构建。
 
 预览使用虚构数据，不是真实扩展截图。主题切换、内容切换和任务勾选只改变此网页内的演示状态，不操作扩展或真实账号，不播放音频。
 

@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <p className={styles.eyebrow}>PRIVACY POLICY</p>
           <h1>隐私政策</h1>
           <p className={styles.updated}>更新日期：2026 年 10 月 26 日</p>
-          <p>本政策适用于 kongzhuww 开发的 tab-project 新标签页浏览器扩展（项目名 tab-project-next，部分界面沿用 LogicWeaver 名称），以及 logicweaver.me 介绍网站。不同版本、启用的组件及用户配置会影响实际处理的数据；本政策涵盖扩展提供的联网、同步和可选组件，不将“默认关闭”视为无需披露。</p>
+          <p>本政策适用于 kongzhuww 开发的 tab-project 新标签页浏览器扩展，以及 logicweaver.me 介绍网站。不同版本、启用的组件及用户配置会影响实际处理的数据；本政策涵盖扩展提供的联网、同步和可选组件，不将“默认关闭”视为无需披露。</p>
           <aside className={styles.notice}>
             <strong>请先了解：</strong>新标签页设置和内容主要保存在浏览器本地，但这不意味着所有数据都不联网。连接第三方账号、使用 AI、天气、网页解析、聊天或同步服务时，相关服务会收到完成该功能所需的数据。备份还可能包含敏感凭据，请勿公开分享备份文件。
           </aside>

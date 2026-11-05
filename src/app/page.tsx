@@ -7,6 +7,7 @@ import Link from "next/link";
 const REPO = "https://github.com/kongzhuww/tab-project";
 const RELEASES_API = "https://api.github.com/repos/kongzhuww/tab-project/releases";
 const RELEASE_URL = "https://github.com/kongzhuww/tab-project/releases/latest";
+const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/tab-project-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5/hogpkihhicjhiakkgjkbchpdoicmbolj";
 const EDGE_STORE_URL = "https://microsoftedge.microsoft.com/addons/detail/tabproject-%E6%96%B0%E6%A0%87%E7%AD%BE%E9%A1%B5/dbkaiojfbolnkpaegflocfbdgpmhjcco";
 
 interface GithubAsset {
@@ -34,26 +35,26 @@ type ThemeId = (typeof themes)[number]["id"];
 
 export default function Home() {
   const [theme, setTheme] = useState<ThemeId>("light");
-  const [latestVersion, setLatestVersion] = useState("1.0.10");
+  const [latestVersion, setLatestVersion] = useState("1.0.14");
   const [latestZipUrl, setLatestZipUrl] = useState(
-    "https://github.com/kongzhuww/tab-project/releases/download/v1.0.10/tab-project-v1.0.10-extension.zip"
+    "https://github.com/kongzhuww/tab-project/releases/download/v1.0.14/tab-project-v1.0.14-extension.zip"
   );
   const [allReleases, setAllReleases] = useState<GithubRelease[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [loadingReleases, setLoadingReleases] = useState(true);
+  const [, setLoadingReleases] = useState(true);
 
   useEffect(() => {
     let active = true;
     fetch(RELEASES_API)
       .then((res) => (res.ok ? res.json() : []))
-      .then((data: any[]) => {
+      .then((data: GithubRelease[]) => {
         if (!active || !Array.isArray(data) || data.length === 0) return;
         setAllReleases(data);
         const latest = data[0];
         if (latest) {
-          const ver = latest.tag_name ? latest.tag_name.replace(/^v/i, "") : "1.0.10";
+          const ver = latest.tag_name ? latest.tag_name.replace(/^v/i, "") : "1.0.14";
           setLatestVersion(ver);
-          const zipAsset = latest.assets?.find((a: any) => a.name?.endsWith(".zip"));
+          const zipAsset = latest.assets?.find((a: GithubAsset) => a.name?.endsWith(".zip"));
           if (zipAsset?.browser_download_url) {
             setLatestZipUrl(zipAsset.browser_download_url);
           }
@@ -105,6 +106,9 @@ export default function Home() {
         </nav>
 
         <div className="header-actions">
+          <a className="repo-link" href={CHROME_STORE_URL} target="_blank" rel="noopener noreferrer" style={{ marginRight: 6 }}>
+            <span>Chrome 商店</span>
+          </a>
           <a className="repo-link" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer" style={{ marginRight: 8 }}>
             <span>Edge 商店</span>
           </a>
@@ -129,13 +133,17 @@ export default function Home() {
               随心畅听的背景旋律。本地保存个人设置，按需连接你选择的服务。
             </p>
             <div className="actions">
-              <a className="button primary" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
-                <span>立即下载 v{latestVersion} 扩展包 (ZIP)</span>
-                <span className="btn-arrow" aria-hidden="true">↓</span>
+              <a className="button primary" href={CHROME_STORE_URL} target="_blank" rel="noopener noreferrer">
+                <span>🛒 Chrome 商店直接获取</span>
+                <span className="btn-arrow" aria-hidden="true">↗</span>
               </a>
               <a className="button secondary" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
                 <span>🛒 Edge 商店直接获取</span>
                 <span className="btn-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a className="button secondary" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
+                <span>离线 ZIP 安装包</span>
+                <span className="btn-arrow" aria-hidden="true">↓</span>
               </a>
               <a className="button secondary" href={REPO} target="_blank" rel="noopener noreferrer">
                 <span>GitHub 源码</span>
@@ -278,18 +286,18 @@ export default function Home() {
           <div className="install-steps-row">
             <div className="install-step-card">
               <span className="step-idx">01</span>
-              <h4>下载解压</h4>
-              <p>下载最新的 <code>tab-project-v{latestVersion}-extension.zip</code>，解压到电脑的固定目录。</p>
+              <h4>商店一键直装（推荐）</h4>
+              <p>前往 Chrome 网上应用店或 Edge 商店，点击“添加至浏览器”即可静默安装并自动更新，无需开启开发者模式。</p>
             </div>
             <div className="install-step-card">
               <span className="step-idx">02</span>
-              <h4>开启扩展模式</h4>
-              <p>在浏览器地址栏打开 <code>edge://extensions</code> 或 <code>chrome://extensions</code>，开启右上角“开发者模式”。</p>
+              <h4>离线或手动解压</h4>
+              <p>如需本地调试，下载最新的 <code>tab-project-v{latestVersion}-extension.zip</code>，解压到电脑的固定目录。</p>
             </div>
             <div className="install-step-card">
               <span className="step-idx">03</span>
               <h4>加载已解压项</h4>
-              <p>点击“加载解压缩的扩展”，选择刚刚解压的目录。新开一个标签页，即可立刻体验你的专属空间！</p>
+              <p>打开 <code>chrome://extensions</code> 或 <code>edge://extensions</code> 开启开发者模式，点击“加载已解压的扩展”，新开标签页即刻启用！</p>
             </div>
           </div>
 
@@ -313,14 +321,17 @@ export default function Home() {
                   <span className="tag-date">{allReleases[0]?.published_at ? formatDate(allReleases[0].published_at) : "最新发布"}</span>
                 </div>
                 <div className="release-card-links">
+                  <a className="dl-btn store-dl chrome" href={CHROME_STORE_URL} target="_blank" rel="noopener noreferrer">
+                    <span>🛒 Chrome 商店直接获取</span>
+                  </a>
+                  <a className="dl-btn store-dl edge" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
+                    <span>🛒 Edge 商店直接获取</span>
+                  </a>
                   <a className="dl-btn primary-dl" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
                     <span>📥 官方下载 ZIP</span>
                   </a>
                   <a className="dl-btn mirror-dl" href={getMirrorDownloadUrl(latestZipUrl)} target="_blank" rel="noopener noreferrer" title="免翻加速下载">
                     <span>⚡ 国内镜像加速</span>
-                  </a>
-                  <a className="dl-btn store-dl" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
-                    <span>🛒 Edge 商店直接获取</span>
                   </a>
                 </div>
               </div>
@@ -372,13 +383,17 @@ export default function Home() {
             <h2>打开新一页，回到属于你的从容。</h2>
             <p>tab-project · 基于纯净 Manifest V3 构建的现代化开源新标签页</p>
             <div className="actions justify-center">
-              <a className="button primary" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
-                <span>下载 v{latestVersion} 正式版</span>
-                <span className="btn-arrow" aria-hidden="true">↓</span>
+              <a className="button primary" href={CHROME_STORE_URL} target="_blank" rel="noopener noreferrer">
+                <span>前往 Chrome 网上应用店</span>
+                <span className="btn-arrow" aria-hidden="true">🛒</span>
               </a>
               <a className="button secondary" href={EDGE_STORE_URL} target="_blank" rel="noopener noreferrer">
                 <span>前往 Edge 加载项商店</span>
                 <span className="btn-arrow" aria-hidden="true">🛒</span>
+              </a>
+              <a className="button secondary" href={latestZipUrl} target="_blank" rel="noopener noreferrer">
+                <span>下载 v{latestVersion} 正式版</span>
+                <span className="btn-arrow" aria-hidden="true">↓</span>
               </a>
               <a className="button secondary" href={REPO} target="_blank" rel="noopener noreferrer">
                 <span>在 GitHub 上关注项目</span>
